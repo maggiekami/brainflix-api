@@ -35,6 +35,13 @@ router.get("/", (req, res) => {
 
 router.post("/", (req, res) => {
   const { title, description } = req.body;
+
+  if (!title || !description) {
+    return res
+      .status(400)
+      .json({ error: true, message: "You must provide all the details" });
+  }
+
   const videos = getAllVideosData();
 
   const videoToBePosted = {
@@ -72,7 +79,7 @@ router.post("/", (req, res) => {
     if (err) {
       return res.status(500).json({
         error: true,
-        message: "Could not write to users JSON file",
+        message: "Could not save the video, please try again",
       });
     }
     res.status(201).json(videoToBePosted);
@@ -81,7 +88,21 @@ router.post("/", (req, res) => {
 
 // gives acces to current video (state variable)
 // any state variable you access by route call
-// router.get("/:id")
-module.exports = router;
+
+router.get("/:id", (req, res) => {
+  const id = req.params.id;
+  const videos = getAllVideosData();
+  const currentVideo = videos.find((video) => video.id === id);
+  if (currentVideo) {
+    return res.json(currentVideo);
+  }
+  return res
+    .status(404)
+    .json({ error: true, message: "Could not find the video" });
+});
+
+// router.post
 
 //"/:id/commments"
+
+module.exports = router;
