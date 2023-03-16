@@ -54,7 +54,6 @@ router.post("/", (req, res) => {
     likes: "300,700",
     duration: "3:45",
     video: "https://project-2-api.herokuapp.com/",
-    // add image instead of video
     timestamp: 1630656720000,
     comments: [
       {
@@ -101,7 +100,38 @@ router.get("/:id", (req, res) => {
     .json({ error: true, message: "Could not find the video" });
 });
 
-// router.post
+router.post("/:id/commments", (req, res) => {
+  const { comment } = req.body;
+  const id = req.params.id;
+  const videos = getAllVideosData();
+
+  const newComment = {
+    id: uuidv4(),
+    name: "New User",
+    comment: comment,
+    timestamp: new Date(),
+  };
+
+  const currentVideo = videos.find((video) => video.id === id);
+
+  if (!currentVideo) {
+    return res
+      .status(404)
+      .json({ error: true, message: "Could not find the video" });
+  }
+
+  currentVideo.comments.push(newComment);
+  fs.writeFile("./data/videos.json", JSON.stringify(videos), (err) => {
+    if (err) {
+      return res.status(500).json({
+        error: true,
+        message: "Could not add the comment, please try again",
+      });
+    }
+    // return res.status(201).json(currentVideo.comments);
+    return res.status(201).json(newComment);
+  });
+});
 
 //"/:id/commments"
 
