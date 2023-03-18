@@ -100,14 +100,14 @@ router.get("/:id", (req, res) => {
     .json({ error: true, message: "Could not find the video" });
 });
 
-router.post("/:id/commments", (req, res) => {
-  const { comment } = req.body;
+router.post("/:id/comments", (req, res) => {
+  const { name, comment } = req.body;
   const id = req.params.id;
   const videos = getAllVideosData();
 
   const newComment = {
     id: uuidv4(),
-    name: "New User",
+    name: name,
     comment: comment,
     timestamp: new Date(),
   };
