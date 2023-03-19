@@ -133,6 +133,42 @@ router.post("/:id/comments", (req, res) => {
   });
 });
 
-//"/:id/commments"
+router.delete("/:id/comments/:commentId", (req, res) => {
+  const videoId = req.params.id;
+  const commentId = req.params.commentId;
+  const videos = getAllVideosData();
+  videos.map((video) => {
+    if (video.id === videoId) {
+      video.comments = video.comments.filter((comment) => {
+        return comment.id !== commentId;
+      });
+    }
+    return video;
+  });
+
+  // const currentVideo = videos.find((video) => video.id === id);
+
+  // if (!currentVideo) {
+  //   return res
+  //     .status(404)
+  //     .json({ error: true, message: "Could not find the video" });
+  // }
+  // const updatedComments = currentVideo.comments.filter(
+  //   (comment) => commentId !== comment.id
+  // );
+  fs.writeFile("./data/videos.json", JSON.stringify(videos), (err) => {
+    if (err) {
+      return res.status(500).json({
+        error: true,
+        message: "Could not delete comment, please try again",
+      });
+    }
+    const getData = (id) => {
+      return getAllVideosData().find((video) => video.id === id);
+    };
+    // return res.status(201).json(getData(videoId).comments);
+    return res.status(201).json(videos);
+  });
+});
 
 module.exports = router;
