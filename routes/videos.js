@@ -13,11 +13,8 @@ const getAllVideosData = () => {
   }
 };
 
-// add router get and post and get video with id (=find current video with this id)
-
 router.get("/", (req, res) => {
   const myData = getAllVideosData();
-  //   res.json(myData);
   const sideVideos = myData.map((videoItem) => {
     return {
       title: videoItem.title,
@@ -28,10 +25,6 @@ router.get("/", (req, res) => {
   });
   res.json(sideVideos);
 });
-
-// just home route = slash / is videos cause use app use - has videos
-
-//   get videos on top, createobject, push, write to file, res.status(201).json(videotobeposted)
 
 router.post("/", (req, res) => {
   const { title, description } = req.body;
@@ -85,9 +78,6 @@ router.post("/", (req, res) => {
   });
 });
 
-// gives acces to current video (state variable)
-// any state variable you access by route call
-
 router.get("/:id", (req, res) => {
   const id = req.params.id;
   const videos = getAllVideosData();
@@ -128,7 +118,6 @@ router.post("/:id/comments", (req, res) => {
         message: "Could not add the comment, please try again",
       });
     }
-    // return res.status(201).json(currentVideo.comments);
     return res.status(201).json(newComment);
   });
 });
@@ -146,16 +135,6 @@ router.delete("/:id/comments/:commentId", (req, res) => {
     return video;
   });
 
-  // const currentVideo = videos.find((video) => video.id === id);
-
-  // if (!currentVideo) {
-  //   return res
-  //     .status(404)
-  //     .json({ error: true, message: "Could not find the video" });
-  // }
-  // const updatedComments = currentVideo.comments.filter(
-  //   (comment) => commentId !== comment.id
-  // );
   fs.writeFile("./data/videos.json", JSON.stringify(videos), (err) => {
     if (err) {
       return res.status(500).json({
@@ -166,7 +145,6 @@ router.delete("/:id/comments/:commentId", (req, res) => {
     const getData = (id) => {
       return getAllVideosData().find((video) => video.id === id);
     };
-    // return res.status(201).json(getData(videoId).comments);
     return res.status(201).json(videos);
   });
 });
